@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical" MembersFormat="NameAndType">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="IAPL.Transport.Data.DbTransaction" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Database\DbTransaction.cs</FileName>
+      <HashCode>EQEIIIEASGAAIAADBDAAgAAJQAAAAQIAQSVCBoCyFQA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Data.Sql.SqlAccessor" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Database\SqlAccessor.cs</FileName>
+      <HashCode>AACAIAAAAAAAACAAABAAAEAIAAAAAAABAAAEACAAACA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.IMS.Process" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IMS\Process.cs</FileName>
+      <HashCode>gAAIAAAAAAAAAAAgAQACACAAAAAAAAAAAAAIAAiAAAg=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Operation.Email" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Operation\Email.cs</FileName>
+      <HashCode>AwAAGAMAAAQAAAAcAMAAAAiAAACIAAAAgAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Operation.FTP" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Operation\FTP.cs</FileName>
+      <HashCode>IQQCAAEAAAIAAAAAIAAEAIkAAAEAAEACAQUABgEAIAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Operation.Http" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Operation\Http.cs</FileName>
+      <HashCode>AQAAgAEAAAAAAAACAAIAAAAAAAACAAACAQAAAgEAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Operation.Network" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Operation\Network.cs</FileName>
+      <HashCode>IQQAAAEAAAIAAAAAIAAEAIkAAAAAAEACAQEAAgEAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Operation.SFTP" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Operation\SFTP.cs</FileName>
+      <HashCode>IQQCAAEAAAIAAAAAIAAEAIkAAAEAAEACAQUABgEAIAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Program" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Program.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Properties.Settings" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIIAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.EmailTransaction" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\EmailTransaction.cs</FileName>
+      <HashCode>AQIAgAEQwCAQQBAABCoAAgAIAgACCMAAACBhQAAIAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.FtpTransaction" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\FtpTransaction.cs</FileName>
+      <HashCode>gSCAAUEEAAAAAAAAAgKCiEAAAAEAAAACAAABQAAAAEA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.HTTPProcessObject" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\HTTPProcessObject.cs</FileName>
+      <HashCode>AQQVAAEBUAAKAIQAAIAOBgQEAOQAZAYCAaIEERhARgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.MessageDetails" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\MessageDetails.cs</FileName>
+      <HashCode>4SmYOAwqiCwNAwIYDqEOoo5vDA6AqgwSSKAQJXtJGAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.MessageTransaction" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\MessageTransaction.cs</FileName>
+      <HashCode>AAAAAAUAAkIIAAACABAgAQEAAYACBgAAABQAAYAAAAg=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.NetTransaction" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\NetTransaction.cs</FileName>
+      <HashCode>gQAIiAEAAEADAAgAAAIAgAEAAAgBAAACAAABCAAAACA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.PingServer" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\PingServer.cs</FileName>
+      <HashCode>AAAAAAAAKAAAAAAAAAAAAAAAgACAwAEAAAABAiEAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.Requeue" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\Requeue.cs</FileName>
+      <HashCode>AAAAQAAAAAAAEAAAAAAAQAgBBAAAIgIAQQAAAAAAAAE=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.SentDetail_BO" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\SentDetail BO.cs</FileName>
+      <HashCode>AAAAAAAAAAIAAAQAAAAAAAAAAAAAAAAACAAAAABAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.ServerDetails" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\ServerDetails.cs</FileName>
+      <HashCode>QQGsQQEBpIGAAIAAJBECEnwQQgFwKBoNCAAiAEpALiA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.SftpTransaction" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\SftpTransaction.cs</FileName>
+      <HashCode>gSCAAUEAAAAAAAAAAgKCiAAAAAEAAAACAAABQAAAAEA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Transactions.Worker" Collapsed="true">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Transactions\Worker.cs</FileName>
+      <HashCode>ACFVRIQYAHUAAKAgAFjRUEEgAHCBAASwQM0K0ANIAAQ=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.CommonTools">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\CommonTools.cs</FileName>
+      <HashCode>AAAAAAAAAAAAQAAgAAAEAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.ConstantVariables" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\ConstantVariables.cs</FileName>
+      <HashCode>AAYCKFAAAAgAEgIgAAABBMEOEAAAIAIQUAAkIoAAAUA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.IAPLRemoteService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\IAPLRemoteService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="IAPL.Transport.Util.ProgressDialog" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\Progress.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.TextLogger" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\TextLogger.cs</FileName>
+      <HashCode>AAAgBAAGAAAgAAACQABEIAAQJAgAAAABwAAAAQAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.Utility">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\Utility.cs</FileName>
+      <HashCode>QUADACAEAkAgAAAwQEAAAAAAAEAAQAgAAQEABABAIAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Util.XmlData" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Util\XmlData.cs</FileName>
+      <HashCode>AAAAAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAACCAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="IAPL.Transport.Data.Sql.SqlAccessor">
+    <Position X="0.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <FileName>Database\SqlAccessor.cs</FileName>
+      <HashCode>AACAIAAAAAAAACAAABAAAEAIAAAAAAABAAAEACAAACA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IAPL.Transport.Data.DbTransaction">
+    <Position X="4" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <FileName>Database\DbTransaction.cs</FileName>
+      <HashCode>EQEIIIEAQCAAAAADADAAgAAJQAAAAQAAQCVAAoACEAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

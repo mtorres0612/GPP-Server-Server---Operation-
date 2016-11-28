@@ -1,0 +1,1136 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Resco.Zip</name>
+    </assembly>
+    <members>
+        <member name="T:Resco.IO.Zip.Internals.Inflater">
+            <summary>
+            Summary description for Inflate.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.Internals.Tree">
+            <summary>
+            Summary description for Tree.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree._tr_align(Resco.IO.Zip.Internals.DeflateState)">
+            <summary>
+            Send one empty static block to give enough lookahead for inflate.
+            This takes 10 bits, of which 7 may remain in the bit buffer.
+            The current inflate code requires 9 bits of lookahead. If the
+            last two codes for the previous block (real code plus EOB) were coded
+            on 5 bits or less, inflate may have only 5+3 bits of lookahead to decode
+            the last real code. In this case we send two empty static blocks instead
+            of one. (There are no problems if the previous block is stored or fixed.)
+            To simplify the code, we assume the worst case of last real code encoded
+            on one bit only.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.send_code(Resco.IO.Zip.Internals.DeflateState,System.Int32,Resco.IO.Zip.Internals.Tree.CTData[])">
+            <summary>
+            Send a code of the given tree. c and tree must not have side effects
+            </summary>
+            <param name="s"></param>
+            <param name="c"></param>
+            <param name="tree"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.put_byte(Resco.IO.Zip.Internals.DeflateState,System.Byte)">
+            <summary>
+            Output a byte on the stream.
+            IN assertion: there is enough room in pending_buf.
+            </summary>
+            <param name="s"></param>
+            <param name="c"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.put_short(Resco.IO.Zip.Internals.DeflateState,System.UInt16)">
+            <summary>
+            Output a short LSB first on the stream.
+            IN assertion: there is enough room in pendingBuf.
+            </summary>
+            <param name="s"></param>
+            <param name="w"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.bi_flush(Resco.IO.Zip.Internals.DeflateState)">
+            <summary>
+            Flush the bit buffer, keeping at most 7 bits in it.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.bi_windup(Resco.IO.Zip.Internals.DeflateState)">
+            <summary>
+            Flush the bit buffer and align the output on a byte boundary
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree._tr_flush_block(Resco.IO.Zip.Internals.DeflateState,System.Byte[],System.Int32,System.UInt32,System.Boolean)">
+            <summary>
+            Determine the best encoding for the current block: dynamic trees, static
+            trees or store, and output the encoded block to the zip file.
+            </summary>
+            <param name="s"></param>
+            <param name="buf"></param>
+            <param name="index"></param>
+            <param name="stored_len"></param>
+            <param name="eof"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.build_tree(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.TreeDesc)">
+            <summary>
+            Construct one Huffman tree and assigns the code bit strings and lengths.
+            Update the total bit length for the current block.
+            IN assertion: the field freq is set for all tree elements.
+            OUT assertions: the fields len and code are set to the optimal bit length
+                and corresponding code. The length opt_len is updated; static_len is
+                also updated if stree is not null. The field max_code is set.
+            </summary>
+            <param name="s"></param>
+            <param name="desc"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.pqdownheap(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.CTData[],System.Int32)">
+            <summary>
+            Restore the heap property by moving down the tree starting at node k,
+            exchanging a node with the smallest of its two sons if necessary, stopping
+            when the heap property is re-established (each father smaller than its
+            two sons).
+            </summary>
+            <param name="s"></param>
+            <param name="tree"></param>
+            <param name="k"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.pqremove(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.CTData[],System.Int32@)">
+            <summary>
+            Remove the smallest element from the heap and recreate the heap with
+            one less element. Updates heap and heap_len.
+            </summary>
+            <param name="s"></param>
+            <param name="tree"></param>
+            <param name="top"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.smaller(Resco.IO.Zip.Internals.Tree.CTData[],System.Int32,System.Int32,System.Byte[])">
+            <summary>
+            Compares to subtrees, using the tree depth as tie breaker when
+            the subtrees have equal frequency. This minimizes the worst case length.
+            </summary>
+            <param name="tree"></param>
+            <param name="n"></param>
+            <param name="m"></param>
+            <param name="depth"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree._tr_tally(Resco.IO.Zip.Internals.DeflateState,System.UInt32,System.UInt32)">
+            <summary>
+            Save the match info and tally the frequency counts. Return true if
+            the current block must be flushed.
+            </summary>
+            <param name="s"></param>
+            <param name="dist"></param>
+            <param name="lc"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.compress_block(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.CTData[],Resco.IO.Zip.Internals.Tree.CTData[])">
+            <summary>
+            Send the block data compressed using the given Huffman trees
+            </summary>
+            <param name="s"></param>
+            <param name="ltree"></param>
+            <param name="dtree"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.d_code(System.Int32)">
+            <summary>
+            Mapping from a distance to a distance code. dist is the distance - 1 and
+            must not have side effects. _dist_code[256] and _dist_code[257] are never
+            used.
+            </summary>
+            <param name="dist"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.build_bl_tree(Resco.IO.Zip.Internals.DeflateState)">
+            <summary>
+            Construct the Huffman tree for the bit lengths and return the index in
+            bl_order of the last bit length code to send.
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.gen_bitlen(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.TreeDesc)">
+            <summary>
+            Compute the optimal bit lengths for a tree and update the total bit length
+            for the current block.
+            IN assertion: the fields freq and dad are set, heap[heap_max] and
+               above are the tree nodes sorted by increasing frequency.
+            OUT assertions: the field len is set to the optimal bit length, the
+                array bl_count contains the frequencies for each bit length.
+                The length opt_len is updated; static_len is also updated if stree is
+                not null.
+            </summary>
+            <param name="s"></param>
+            <param name="desc"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.gen_codes(Resco.IO.Zip.Internals.Tree.CTData[],System.Int32,System.UInt16[])">
+            <summary>
+            Generate the codes for a given tree and bit counts (which need not be
+            optimal).
+            IN assertion: the array bl_count contains the bit length statistics for
+            the given tree and the field len is set for all tree elements.
+            OUT assertion: the field code is set for all tree elements of non
+                zero code length.
+            </summary>
+            <param name="tree"></param>
+            <param name="max_code"></param>
+            <param name="bl_count"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.init_block(Resco.IO.Zip.Internals.DeflateState)">
+            <summary>
+            Initialize a new block.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.send_all_trees(Resco.IO.Zip.Internals.DeflateState,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Send the header for a block using dynamic Huffman trees: the counts, the
+            lengths of the bit length codes, the literal tree and the distance tree.
+            IN assertion: lcodes >= 257, dcodes >= 1, blcodes >= 4.
+            </summary>
+            <param name="s"></param>
+            <param name="lcodes"></param>
+            <param name="dcodes"></param>
+            <param name="blcodes"></param>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Tree.send_tree(Resco.IO.Zip.Internals.DeflateState,Resco.IO.Zip.Internals.Tree.CTData[],System.Int32)">
+            <summary>
+            Send a literal or distance tree in compressed form, using the codes in
+            bl_tree.
+            </summary>
+            <param name="s"></param>
+            <param name="tree"></param>
+            <param name="max_code"></param>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipArchive">
+            <summary>
+            This class is used to manage archives.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.#ctor(System.String,Resco.IO.Zip.ZipArchiveMode,System.IO.FileShare)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipArchive"/> class with the specified path, creation mode, and sharing permission.
+            </summary>
+            <param name="path">A relative or absolute path for the file that the current <see cref="T:Resco.IO.Zip.ZipArchive"/> object will encapsulate.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipArchiveMode"/> constant that determines how to open or create the file. </param>
+            <param name="share">A <see cref="T:System.IO.FileShare"/> constant that determines how the archive will be shared by processes. </param>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Create(System.String,System.Boolean)">
+            <summary>
+            Creates or overwrites the specified <see cref="T:Resco.IO.Zip.ZipArchive"/>.
+            </summary>
+            <param name="path">The name of the archive.</param>
+            <param name="overwrite">The flag if the archive could be overwritten.</param>
+            <returns>A new archive. If overwrite is <b>false</b> and archive exist, <see cref="T:System.IO.IOException"/> will be thrown.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Open(System.String)">
+            <summary>
+            Opens a <see cref="T:Resco.IO.Zip.ZipArchive"/> on the specified path.
+            </summary>
+            <param name="path">The file to open.</param>
+            <returns>A <see cref="T:Resco.IO.Zip.ZipArchive"/> opened in the specified path and not shared.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.OpenFile(System.String,Resco.IO.Zip.ZipFileMode)">
+            <summary>
+            Opens a <see cref="T:Resco.IO.Zip.ZipStream"/> on the specified path.
+            </summary>
+            <param name="fileName">The file to open.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipFileMode"/> value that specifies whether a file is extracted or created if one does not exist, and determines whether the contents of existing files are overwritten.</param>
+            <returns>A <see cref="T:Resco.IO.Zip.ZipStream"/> opened in the specified mode and path. If the path is a directort return value is <b>null</b>.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.OpenFile(System.String,Resco.IO.Zip.ZipFileMode,System.String)">
+            <summary>
+            Opens a <see cref="T:Resco.IO.Zip.ZipStream"/> on the specified path with password.
+            </summary>
+            <param name="fileName">The file to open.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipFileMode"/> value that specifies whether a file is extracted or created if one does not exist, and determines whether the contents of existing files are overwritten.</param>
+            <param name="password">A password for the file.</param>
+            <returns>A <see cref="T:Resco.IO.Zip.ZipStream"/> opened in the specified mode and path. If the path is a directort return value is <b>null</b>.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.OpenFile(System.String,Resco.IO.Zip.ZipFileMode,System.Int32)">
+            <summary>
+            Opens a <see cref="T:Resco.IO.Zip.ZipStream"/> on the specified path with compression level.
+            </summary>
+            <param name="fileName">The file to open.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipFileMode"/> value that specifies whether a file is extracted or created if one does not exist, and determines whether the contents of existing files are overwritten.</param>
+            <param name="compLevel">A compression level if new file is created.</param>
+            <returns>A <see cref="T:Resco.IO.Zip.ZipStream"/> opened in the specified mode and path. If the path is a directort return value is <b>null</b>.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.OpenFile(System.String,Resco.IO.Zip.ZipFileMode,System.String,System.Int32)">
+            <summary>
+            Opens a <see cref="T:Resco.IO.Zip.ZipStream"/> on the specified path with password and compression level.
+            </summary>
+            <param name="fileName">The file to open.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipFileMode"/> value that specifies whether a file is extracted or created if one does not exist, and determines whether the contents of existing files are overwritten.</param>
+            <param name="password">A password for the file</param>
+            <param name="compLevel">A compression level if new file is created.</param>
+            <returns>A <see cref="T:Resco.IO.Zip.ZipStream"/> opened in the specified mode and path. If the path is a directort return value is <b>null</b>.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Close">
+            <summary>
+            Closes the archive and releases any resources associated with the current archive.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetEntryName(System.String)">
+            <summary>
+            Return the name of directory or file.
+            </summary>
+            <param name="path">Path to the directory or file.</param>
+            <returns>The name of directory or file.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetEntryParent(System.String)">
+            <summary>
+            Return the name of parent directory of directory or file.
+            </summary>
+            <param name="path">Path to the directory or file.</param>
+            <returns>The name of parent directory in which directory or file is.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetFiles(System.String)">
+            <summary>
+            Returns the names of files in the specified directory.
+            </summary>
+            <param name="path">The directory from which to retrieve the files. </param>
+            <returns>A <b>String</b> array of file names in the specified directory.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetFiles(System.String,System.String)">
+            <summary>
+            Returns the names of files in the specified directory that match the specified search pattern.
+            </summary>
+            <param name="path">The directory to search. </param>
+            <param name="searchPattern">The search string to match against the names of files in path.</param>
+            <returns>A <b>String</b> array containing the names of files in the specified directory that match the specified search pattern.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetDirectories(System.String)">
+            <summary>
+            Gets the names of subdirectories in the specified directory.
+            </summary>
+            <param name="path">The path for which an array of subdirectory names is returned.</param>
+            <returns>A <b>String</b> array containing the names of subdirectories in path.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetDirectories(System.String,System.String)">
+            <summary>
+            Gets an array of directories matching the specified search pattern from the current directory.
+            </summary>
+            <param name="path">The path to search.</param>
+            <param name="searchPattern">The search string to match against the names of directories in path.</param>
+            <returns>A <b>String</b> array of directories matching the search pattern.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetFileSystemEntries(System.String)">
+            <summary>
+            Returns the names of all files and subdirectories in the specified directory.
+            </summary>
+            <param name="path">The directory for which file and subdirectory names are returned.</param>
+            <returns>A <b>String</b> array containing the names of file system entries in the specified directory.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetFileSystemEntries(System.String,System.String)">
+            <summary>
+            Returns an array of file system entries matching the specified search criteria.
+            </summary>
+            <param name="path">The path to be searched.</param>
+            <param name="searchPattern">The search string to match against the names of files in path.</param>
+            <returns>A <b>String</b> array of file system entries matching the search criteria.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetAllEntries">
+            <summary>
+            Returns the names of all files and subdirectories in the archive.
+            </summary>
+            <returns>A <b>String</b> array containing the names of file system entries in the archive.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetDirectoryRoot">
+            <summary>
+            Returns the root path.
+            </summary>
+            <returns>A string containing the root path.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.CleanTemp">
+            <summary>
+            Clean up temp directory.
+            </summary>
+            <remarks>This function will clean up all temp files which could by used by <see cref="T:Resco.IO.Zip.ZipArchive"/>.
+            They could stay if you got an exception. It is also automatically called after <see cref="M:Resco.IO.Zip.ZipArchive.Close"/> function.
+            Files with mask <b>_rzl*.tmp</b> will deleted.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetAttributes(System.String)">
+            <summary>
+            Gets the <see cref="T:Resco.IO.Zip.ZipFileAttributes"/> of the file on the path.
+            </summary>
+            <param name="fileName">The path to the file.</param>
+            <returns>The <see cref="T:Resco.IO.Zip.ZipFileAttributes"/> of the file on the path.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetCrc(System.String)">
+            <summary>
+            Gets the CRC of the file on the path.
+            </summary>
+            <param name="fileName">The path to the file.</param>
+            <returns>The CRC of the file on the path.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.GetModificationTime(System.String)">
+            <summary>
+            Gets the modification date and time of a directory or a file.
+            </summary>
+            <param name="fileName">The path of the directory.</param>
+            <returns>A <see cref="T:System.DateTime"/> structure set to the modification date and time for the specified directory or file. This value is expressed in local time.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.CreateDirectory(System.String)">
+            <summary>
+            Creates all directories and subdirectories as specified by path.
+            </summary>
+            <param name="path">The directory path to create.</param>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Exist(System.String)">
+            <summary>
+            Determines whether the given path refers to an existing directory or file in archive.
+            </summary>
+            <param name="path">The path to test.</param>
+            <returns><b>true</b> if path refers to an existing directory; otherwise, <b>false</b>.</returns>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Delete(System.String,System.Boolean)">
+            <summary>
+            Deletes the specified directory and, if indicated, any subdirectories in the directory.
+            </summary>
+            <param name="path">The name of the directory to remove. </param>
+            <param name="recursive"><b>true</b> to remove directories, subdirectories, and files in path; otherwise, <b>false</b>.</param>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Delete(System.String)">
+            <summary>
+            Deletes an empty directory or a file from a specified path.
+            </summary>
+            <param name="path">The name of the empty directory or file to remove.</param>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Move(System.String,System.String)">
+            <summary>
+            Moves a file or a directory and its contents to a new location.
+            </summary>
+            <param name="sourceDirName">The path of the file or directory to move</param>
+            <param name="destDirName">The path to the new location for sourceDirName.</param>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Update">
+            <summary>
+            Update changes made to the archive.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Extract(System.String,System.String,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Extract file or directory to destination path.
+            </summary>
+            <param name="sourcePath">File or directory to be extracted.</param>
+            <param name="destPath">Destination directory for extract.</param>
+            <param name="progress">Progress delegate to notify about percentage status of extracted file.</param>
+            <remarks>Use this function to quick extract file or directory from archive. If you specify direcotry, all files and subfolders will be extracted.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about extracting status; otherwise use <b>null</b>.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Extract(System.String,System.String,System.String,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Extract file or directory to destination path with specified password.
+            </summary>
+            <param name="sourcePath">File or directory to be extracted.</param>
+            <param name="destPath">Destination directory for extract.</param>
+            <param name="password">Password for the files.</param>
+            <param name="progress">Progress delegate to notify about percentage status of extracted file.</param>
+            <remarks>Use this function to quick extract file or directory from archive. If you specify direcotry, all files and subfolders will be extracted.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about extracting status; otherwise use <b>null</b>.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Add(System.String,System.String,System.Boolean,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Add file or directory to the archive without password.
+            </summary>
+            <param name="sourcePath">File or directory to be added.</param>
+            <param name="destPath">Destination directory within archive.</param>
+            <param name="replace">Specifies if to replace existing files in archive.</param>
+            <param name="progress">Progress delegate to notify about percentage status of added file.</param>
+            <remarks>Use this function to quick add file or directory to archive. If you specify direcotry, all files and subfolders will be added.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about adding status; otherwise use <b>null</b>.
+            If you set replace to <b>false</b> and the file exist in archive, <see cref="T:System.IO.IOException"/> will be thrown.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Add(System.String,System.String,System.Boolean,System.Int32,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Add file or directory to the archive without password.
+            </summary>
+            <param name="sourcePath">File or directory to be added.</param>
+            <param name="destPath">Destination directory within archive.</param>
+            <param name="replace">Specifies if to replace existing files in archive.</param>
+            <param name="compLevel">Compression level.</param>
+            <param name="progress">Progress delegate to notify about percentage status of added file.</param>
+            <remarks>Use this function to quick add file or directory to archive. If you specify direcotry, all files and subfolders will be added.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about adding status; otherwise use <b>null</b>.
+            If you set replace to <b>false</b> and the file exist in archive, <see cref="T:System.IO.IOException"/> will be thrown.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Add(System.String,System.String,System.String,System.Boolean,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Add file or directory to the archive with specified password.
+            </summary>
+            <param name="sourcePath">File or directory to be added.</param>
+            <param name="destPath">Destination directory within archive.</param>
+            <param name="password">Password for new files.</param>
+            <param name="replace">Specifies if to replace existing files in archive.</param>
+            <param name="progress">Progress delegate to notify about percentage status of added file.</param>
+            <remarks>Use this function to quick add file or directory to archive. If you specify direcotry, all files and subfolders will be added.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about adding status; otherwise use <b>null</b>.
+            If you set replace to <b>false</b> and the file exist in archive, <see cref="T:System.IO.IOException"/> will be thrown.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive.Add(System.String,System.String,System.String,System.Boolean,System.Int32,Resco.IO.Zip.ProgressDelegate)">
+            <summary>
+            Add file or directory to the archive with specified password.
+            </summary>
+            <param name="sourcePath">File or directory to be added.</param>
+            <param name="destPath">Destination directory within archive.</param>
+            <param name="password">Password for new files.</param>
+            <param name="replace">Specifies if to replace existing files in archive.</param>
+            <param name="compLevel">Compression level.</param>
+            <param name="progress">Progress delegate to notify about percentage status of added file.</param>
+            <remarks>Use this function to quick add file or directory to archive. If you specify direcotry, all files and subfolders will be added.
+            You can specify also <see cref="T:Resco.IO.Zip.ProgressDelegate"/> to be notified about adding status; otherwise use <b>null</b>.
+            If you set replace to <b>false</b> and the file exist in archive, <see cref="T:System.IO.IOException"/> will be thrown.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipArchive._ReadZipFileEntry(System.Int32,Resco.IO.Zip.Internals.CentralDirectoryHeader,Resco.IO.Zip.Internals.ZipFileEntry)">
+             <summary>
+            * Loads relevant info from central_dir_file_header to ZipFileEntry.
+            * In the future we maybe load also the file-comment part, too.
+            *
+            * @param	in		stream from which to read.
+            * @param 	index	only used in the case that no fileName is present, so we can generate an unique name.
+            * @param	cdir	(o) central_directory_file_hdr, the stream must be posistioned on the start of the dir
+            * @param	entry	(o) zipEntry filled with the information found in the directory_entry
+            * @return			0 if no error, in this case the stream should be on the next directory_entry or end_directory_record.
+            *					errorCode otherwise
+             </summary>
+             <param name="index"></param>
+             <param name="cdir"></param>
+             <param name="entry"></param>
+             <returns></returns>
+        </member>
+        <member name="E:Resco.IO.Zip.ZipArchive.PasswordRequired">
+            <summary>
+            Occurs when the file is encrypted and password is required.
+            </summary>
+            <remarks>This function occurs when you try to open encrypted file to read without password specified.</remarks>
+        </member>
+        <member name="E:Resco.IO.Zip.ZipArchive.Updating">
+            <summary>
+            Occurs when the archive is being updated.
+            </summary>
+            <remarks>This function occurs when update started.</remarks>
+        </member>
+        <member name="E:Resco.IO.Zip.ZipArchive.Updated">
+            <summary>
+            Occurs when the archive was updated.
+            </summary>
+            <remarks>This function occurs when update ended.</remarks>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipArchive.AutoUpdate">
+            <summary>
+            Indicate wheter the call of <see cref="M:Resco.IO.Zip.ZipArchive.Update"/> is 
+            automatic after each change made to archive, or it is called manually
+            from your code. <b>True</b> is automatic update; <b>false</b> is manual update,
+            or updated on <see cref="M:Resco.IO.Zip.ZipArchive.Close"/>.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipArchive.Comment">
+            <summary>
+            Comment of current archive.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipArchive.Temp">
+            <summary>
+            Specifies temporary directory, in which is performed compresion for new files.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipArchive.Name">
+            <summary>
+            Get or set the name of current archive.
+            </summary>
+            <value>The name of the archive.</value>
+        </member>
+        <member name="T:Resco.IO.Zip.Internals.Deflater">
+            <summary>
+            Summary description for deflate.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Deflater.lm_init(Resco.IO.Zip.Internals.DeflateState)">
+            Initialize the "longest match" routines for a new zlib stream
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.Deflater.read_buf(Resco.IO.Zip.Internals.z_stream,System.Byte[],System.UInt32,System.UInt32)">
+            <summary>
+            Read a new buffer from the current input stream, update the adler32
+            and total number of bytes read.  All deflate() input goes through
+            this function so some applications may wish to modify it to avoid
+            allocating a large strm->next_in buffer and copying from it.
+            (See also flush_pending()).
+            </summary>
+            <param name="strm"></param>
+            <param name="buf"></param>
+            <param name="index"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipStreamMode">
+            <summary>
+            Defines constants for read or write access to a stream.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipStreamMode.Read">
+            <summary>
+            Read access to the stream. Data can be only read from the stream.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipStreamMode.Write">
+            <summary>
+            Write access to the stream. Data can be only written to the stream.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipFileMode">
+            <summary>
+            Specifies how the archive should open a file.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipFileMode.Extract">
+            <summary>
+            Specifies that the archive should open an existing file for reading only.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipFileMode.Add">
+            <summary>
+            Specifies that the archive should create a new file for write only. If the file already exists, an <see cref="T:System.IO.IOException"/> is thrown.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipFileMode.AddReplace">
+            <summary>
+            Specifies that the archive should create a new file for write only. If the file already exists, it will be overwritten.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipFileMode.Replace">
+            <summary>
+            Specifies that the archive should replace a file for write only. If the file does not exists, an <see cref="T:System.IO.FileNotFoundException"/> is thrown.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipArchiveMode">
+            <summary>
+            Specifies how the archive should be open.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipArchiveMode.Create">
+            <summary>
+            Specifies that the operating system should create a new file. If the file already exists, it will be overwritten.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipArchiveMode.CreateNew">
+            <summary>
+            Specifies that the operating system should create a new file. If the file already exists, an <see cref="T:System.IO.IOException"/> is thrown.
+            </summary>
+        </member>
+        <member name="F:Resco.IO.Zip.ZipArchiveMode.Open">
+            <summary>
+            Specifies that the operating system should open an existing file. A <see cref="T:System.IO.FileNotFoundException"/> is thrown if the file does not exist.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ProgressDelegate">
+            <summary>
+            Occurs while the file is extracted or added.
+            </summary>
+            <remarks>This method occurs when you specify progres parameter for <see cref="M:Resco.IO.Zip.ZipArchive.Extract(System.String,System.String,Resco.IO.Zip.ProgressDelegate)"/> or <see cref="M:Resco.IO.Zip.ZipArchive.Add(System.String,System.String,System.Boolean,Resco.IO.Zip.ProgressDelegate)"/>.</remarks>
+        </member>
+        <member name="T:Resco.IO.Zip.PasswordRequiredHandler">
+            <summary>
+            Occurs when the file is encrypted and no password was specified.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipFileAttributes">
+            <summary>
+            Provides attributes for files and directories.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipFileAttributes.Attributes">
+            <summary>
+            Get attributes of the file or directory.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipFileAttributes.Size">
+            <summary>
+            Get size of the file.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipFileAttributes.CompressedSize">
+            <summary>
+            Get compressed size of the file.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipFileAttributes.ModificationDate">
+            <summary>
+            Get modification date of the file.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipFileAttributes.Crc">
+            <summary>
+            Get CRC of the file.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ArchiveCorruptedException">
+            <summary>
+            The exception that is thrown when an archive is corrupted
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.ArchiveCorruptedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ArchiveCorruptedException"/> class 
+            with its message string set to message.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:Resco.IO.Zip.InvalidPasswordException">
+            <summary>
+            The exception that is thrown when an archive is corrupted
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.InvalidPasswordException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ArchiveCorruptedException"/> class 
+            with its message string set to message.
+            </summary>
+            <param name="fileName">File name of the corrupted file.</param>
+        </member>
+        <member name="T:Resco.IO.Zip.PasswordEventArgs">
+            <summary>
+            Provides data for the <b>PasswordRequired</b> event.
+            </summary>
+            <remarks>The <b>PasswordRequired</b> event occurs when the file is encrypted and no password was specified.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.PasswordEventArgs.#ctor">
+            <summary>
+            Initializes a new instance of the <b>PasswordEventArgs</b> class.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.PasswordEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <b>PasswordEventArgs</b> class.
+            </summary>
+            <param name="fileName">File name which require password.</param>
+        </member>
+        <member name="P:Resco.IO.Zip.PasswordEventArgs.FileName">
+            <summary>
+            Get which file require password.
+            </summary>
+        </member>
+        <member name="P:Resco.IO.Zip.PasswordEventArgs.Password">
+            <summary>
+            Get or set new password.
+            </summary>
+        </member>
+        <member name="T:Resco.IO.Zip.ZipStream">
+            <summary>
+            Adds a zipping layer to read and write operations on another stream.
+            </summary>
+            <remarks>
+            This class is used as layer for packed streams. In constructor you must
+            specify main stream which is used for read or write packed data.
+            <b>ZipStream</b> cannot be <b>read/write</b>, it can only <b>read</b> or only <b>write</b> in one instance.
+            When opening in any operation (read or write), calling another will throw <see cref="T:System.NotSupportedException"/>.
+            This is non-seekable stream, so you can read or write data only sequential.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name and read/write mode.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <remarks>This method does not use password and uses default compresion level.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses default compresion level.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode, compression level and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="level">Compression level between 0 and 9.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses specified compresion level.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode, and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <param name="cryptSeed">Seed used for detection of valid password</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses default compresion level.
+            In this contructor you can specify also crypt seed, which is used to check for valid password. If this value is default (-1),
+            as in constructor without this parameter, as a seed is used CRC of password. Its something like password pair. If you crypt
+            stream with password and seed, to decrypt it you need specify both; password and seed. In standart zip archives is used as seed
+            CRC or date of the file.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode and compression level.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="level">Compression level between 0 and 9.</param>
+            <remarks>This method does not use password and uses specified compresion level.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.Int32,System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode, compression level and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="level">Compression level between 0 and 9.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <param name="cryptSeed">Seed used for detection of valid password</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses specified compresion level.
+            In this contructor you can specify also crypt seed, which is used to check for valid password. If this value is default (-1),
+            as in constructor without this parameter, as a seed is used CRC of password. Its something like password pair. If you crypt
+            stream with password and seed, to decrypt it you need specify both; password and seed. In standart zip archives is used as seed
+            CRC or date of the file.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.Int32,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode, compression level and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="level">Compression level between 0 and 9.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <param name="cryptSeed">Seed used for detection of valid password</param>
+            <param name="useCrc">Specifies if stream will compute CRC.</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses specified compresion level.
+            In this contructor you can specify also crypt seed, which is used to check for valid password. If this value is default (-1),
+            as in constructor without this parameter, as a seed is used CRC of password. Its something like password pair. If you crypt
+            stream with password and seed, to decrypt it you need specify both; password and seed. In standart zip archives is used as seed
+            CRC or date of the file. Disabling of computing CRC can speed up compression or decempression.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.#ctor(System.IO.Stream,System.String,Resco.IO.Zip.ZipStreamMode,System.Int32,System.String,System.Int32,System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Resco.IO.Zip.ZipStream"/> class with specified underlaying stream, name, read/write mode, compression level and password.
+            </summary>
+            <param name="stream">The main stream.</param>
+            <param name="name">Name of new stream.</param>
+            <param name="mode">A <see cref="T:Resco.IO.Zip.ZipStreamMode"/> constant that determines how the stream can be accessed.</param>
+            <param name="level">Compression level between 0 and 9.</param>
+            <param name="password">A password used for encryption/decryption.</param>
+            <param name="cryptSeed">Seed used for detection of valid password</param>
+            <param name="useCrc">Specifies if stream will compute CRC.</param>
+            <param name="bufferSize">Size of the stream buffer. Default is <see cref="P:Resco.IO.Zip.ZipStream.DefaultBufferSize"/>.</param>
+            <remarks>This method uses password to initialize encryption/decryption header and uses specified compresion level.
+            In this contructor you can specify also crypt seed, which is used to check for valid password. If this value is default (-1),
+            as in constructor without this parameter, as a seed is used CRC of password. Its something like password pair. If you crypt
+            stream with password and seed, to decrypt it you need specify both; password and seed. In standart zip archives is used as seed
+            CRC or date of the file. Disabling of computing CRC can speed up compression or decempression.
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins an asynchronous read.
+            </summary>
+            <param name="array">The buffer to read data into.</param>
+            <param name="offset">The byte offset in <paramref name="array"/> at which to begin reading.</param>
+            <param name="count">The maximum number of bytes to read.</param>
+            <param name="callback">The method to be called when the asynchronous read operation is completed.</param>
+            <param name="state">A user-provided object that distinguishes this particular asynchronous read request from other requests.</param>
+            <returns>An <see cref="T:System.IAsyncResult"/> that references the asynchronous read.</returns>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"/>.</p>
+            <p>If a stream is closed or you pass an invalid argument, exceptions are thrown immediately from <b>BeginRead</b>. Errors that
+            occur during an asynchronous read request, occur on the threadpool thread and become visible upon a call to <see cref="M:Resco.IO.Zip.ZipStream.EndRead(System.IAsyncResult)"/>.</p>
+            <p><see cref="M:Resco.IO.Zip.ZipStream.EndRead(System.IAsyncResult)"/> must be called with this <see cref="T:System.IAsyncResult"/> to find out how many bytes were read.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.EndRead(System.IAsyncResult)">
+            <summary>
+            Waits for the pending asynchronous read to complete.
+            </summary>
+            <param name="asyncResult">The reference to the pending asynchronous request to wait for.</param>
+            <returns>The number of bytes read from the stream, between 0 and the number of bytes you requested. Streams only return 0 at
+            the end of the stream, otherwise, they should block until at least 1 byte is available.
+            </returns>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.EndRead(System.IAsyncResult)"/>.</p>
+            <p><b>EndRead</b> can be called on every <see cref="T:System.IAsyncResult"/> from <see cref="M:Resco.IO.Zip.ZipStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"/>. Calling <b>EndRead</b> tells you how many bytes were read 
+            from the stream. <b>EndRead</b> will block until the I/O operation has completed.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins an asynchronous write.
+            </summary>
+            <param name="array">The buffer to write data to.</param>
+            <param name="offset">The zero based byte offset in <paramref name="array"/> at which to begin writing.</param>
+            <param name="count">The maximum number of bytes to write.</param>
+            <param name="callback">The method to be called when the asynchronous write operation is completed.</param>
+            <param name="state">A user-provided object that distinguishes this particular asynchronous write request from other requests.</param>
+            <returns>An <see cref="T:System.IAsyncResult"/> that references the asynchronous write.</returns>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"/>.</p>
+            <p>If a stream is closed or you pass an invalid argument, exceptions are thrown immediately from <b>BeginWrite</b>. Errors that 
+            occur during an asynchronous write request, occur on the threadpool thread and become visible upon a call to <see cref="M:Resco.IO.Zip.ZipStream.EndWrite(System.IAsyncResult)"/>.</p>
+            <p><b>EndWrite</b> must be called with this <see cref="T:System.IAsyncResult"/> to find out how many bytes were read.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.EndWrite(System.IAsyncResult)">
+            <summary>
+            Ends an asynchronous write, blocking until the I/O operation has completed.
+            </summary>
+            <param name="asyncResult">The pending asynchronous I/O request.</param>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.EndWrite(System.IAsyncResult)"/>.</p>
+            <p><b>EndWrite</b> must be called exactly once on every <see cref="T:System.IAsyncResult"/> from <see cref="M:Resco.IO.Zip.ZipStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)"/>. <b>EndWrite</b> will block until the I/O
+             operation has completed.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Decompress a block of bytes from the stream and writes the data in a given buffer.
+            </summary>
+            <param name="array">When this method returns, contains the specified byte array with the values between <paramref name="offset"/> and (<paramref name="offset"/> + <paramref name="count"/> - 1) replaced by the bytes read from the current source.</param>
+            <param name="offset">The byte offset in <paramref name="array"/> at which to begin reading. </param>
+            <param name="count">The maximum number of bytes to read.</param>
+            <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference (<b>Nothing</b> in Visual Basic).</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> or <paramref name="count"/> is negative.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support reading.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:Resco.IO.Zip.ArchiveCorruptedException">Decompression error occurs.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="offset"/> and <paramref name="count"/> describe an invalid range in <paramref name="array"/>.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)"/>.</p>
+            <p>The <paramref name="offset"/> parameter gives the offset of the byte in <paramref name="array"/> (the buffer index) at which to begin reading, and the
+            <paramref name="count"/> parameter gives the maximum number of bytes to be decompressed from this stream. The returned value is the 
+            actual number of bytes decompressed, or zero if the end of the stream is reached. If the read operation is successful, the 
+            current position of the stream is advanced by the number of bytes decompressed. If an exception occurs, the current
+            position of the stream is unchanged.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Compress a block of bytes to this stream using data from a buffer.
+            </summary>
+            <param name="array">The array to which bytes are written.</param>
+            <param name="offset">The byte offset in <paramref name="array"/> at which to begin writing. </param>
+            <param name="count">The maximum number of bytes to write.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference (<b>Nothing</b> in Visual Basic).</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> or <paramref name="count"/> is negative.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support writing.</exception>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:Resco.IO.Zip.ArchiveCorruptedException">Compression error occurs.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="offset"/> and <paramref name="count"/> describe an invalid range in <paramref name="array"/>.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)"/>.</p>
+            <p>The <paramref name="offset"/> parameter gives the offset of the byte in <paramref name="array"/> (the buffer index) at which to begin writing, and the
+            <paramref name="count"/> parameter gives the maximum number of bytes that will be compressed to this stream. If the comopress operation is
+            successful, the current position of the stream is advanced by the number of bytes written. If an exception occurs, the current position of the stream is unchanged.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.Flush">
+            <summary>
+            Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+            </summary>
+            <exception cref="T:System.IO.IOException">An I/O error occurs.</exception>
+            <exception cref="T:Resco.IO.Zip.ArchiveCorruptedException">Compression error occurs.</exception>
+            <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.Flush"/>.</p>
+            <p>Flushing the stream will not flush its underlying buffer unless you explicitly call <b>Flush</b> or <see cref="M:Resco.IO.Zip.ZipStream.Close"/>.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.Close">
+            <summary>
+            Closes the zipper and releases any resources associated with the current stream.
+            </summary>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.Close"/>.</p>
+            <p>Any data previously written to the buffer is copied to the underlaying stream before the stream is closed, so it is not
+            necessary to call <see cref="M:Resco.IO.Zip.ZipStream.Flush"/> before invoking <b>Close</b>. Following a call to <b>Close</b>, any operations on the stream might
+            raise exceptions. After <b>Close</b>has been called once, it does nothing if called again.</p>
+            <p>This method does not close underlaying stream. So after closing <b>ZipStream</b>, you must close also main stream.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Not supported. This is non-seekable stream.
+            </summary>
+            <param name="offset">Not supported.</param>
+            <param name="origin">Not supported.</param>
+            <returns>Not supported.</returns>
+            <remarks>This method throw <see cref="T:System.NotSupportedException"/>.</remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of this stream to the given value.
+            </summary>
+            <param name="value">The new length of the stream.</param>
+            <remarks>
+            <p>This method overrides <see cref="M:System.IO.Stream.SetLength(System.Int64)"/>.</p> 
+            <p>This method does not change the length of the stream. It is used only to set known length.</p>
+            </remarks>
+        </member>
+        <member name="M:Resco.IO.Zip.ZipStream.OnClosed(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:Resco.IO.Zip.ZipStream.Closed"/> event.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> that contains the event data.</param>
+            <remarks>
+            <p>This method is called after <see cref="M:Resco.IO.Zip.ZipArchive.Close"/>.</p>
+            <p>The <b>OnClosed</b> method also allows derived classes to handle the event without attaching a delegate. This is 
+            the preferred technique for handling the event in a derived class.</p>
+            <p><b>Notes to Inheritors:</b>  When overriding <b>OnClosed</b> in a derived class, be sure to call the base class's <b>OnClosed</b>
+            method so that registered delegates receive the event.</p>
+            </remarks>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.DefaultBufferSize">
+            <summary>
+            Get the default buffer size.
+            </summary>
+            <value>Default buffer size.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.BufferSize">
+            <summary>
+            Get the current buffer size.
+            </summary>
+            <value>Buffer size.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.BaseStream">
+            <summary>
+            Returns the underlying stream.
+            </summary>
+            <value>The underlying stream.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.CanWrite">
+            <summary>
+            Gets a value indicating whether the current stream supports writing.
+            </summary>
+            <value><b>true</b> if the stream supports writing; <b>false</b> if the stream is closed or was opened with read-only access.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.CanRead">
+            <summary>
+            Gets a value indicating whether the current stream supports reading.
+            </summary>
+            <value><b>true</b> if the stream supports reading; <b>false</b> if the stream is closed or was opened with write-only access.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.CanSeek">
+            <summary>
+            Gets a value indicating whether the current stream supports seeking.
+            </summary>
+            <value><b>ZipStream</b> does not support seek. Return value is always <b>false</b>.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.Length">
+            <summary>
+            Gets the length in bytes of the stream.
+            </summary>
+            <value>A long value representing the length of the stream in bytes.</value>
+            <remarks>This method return only length of underlaying stream (which is differnt from unpacked data length) or
+            length set by <see cref="M:Resco.IO.Zip.ZipStream.SetLength(System.Int64)"/>.</remarks>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.Position">
+            <summary>
+            Gets or sets the current position of this stream.
+            </summary>
+            <value>The current position of this stream.</value>
+            <remarks>You can only get actual position. It specifies how much ov bytes was packed or unpacked.
+            Set throw <see cref="T:System.NotSupportedException"/>.</remarks>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.Crc">
+            <summary>
+            Gets the current CRC of this stream.
+            </summary>
+            <value>CRC of the stream.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.CryptSeed">
+            <summary>
+            Get or set the crypt seed.
+            </summary>
+            <value>The crypt seed.</value>
+            <remarks>Crypt seed is used to check for valid password. If this value is default (-1),
+            as a seed is used CRC of password. Its something like password pair. If you crypt
+            stream with password and seed, to decrypt it you need specify both; password and seed.
+            In standart zip archives is used as seed CRC or date of the file.
+            </remarks>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.UsesCrc">
+            <summary>
+            Get value indicating if CRC is computing.
+            </summary>
+            <value><b>true</b> if CRC is computing; otherwise <b>false</b>.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.Name">
+            <summary>
+            Get or set the name of current stream.
+            </summary>
+            <value>The name of the stream.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.NoCompression">
+            <summary>
+            Get compression level for no compression (stored level).
+            </summary>
+            <value>Return 0.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.BestSpeed">
+            <summary>
+            Get compression level for best speed of compression (stored).
+            </summary>
+            <value>Return 1.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.BestCompression">
+            <summary>
+            Get compression level for best compression.
+            </summary>
+            <value>Return 9.</value>
+        </member>
+        <member name="P:Resco.IO.Zip.ZipStream.DefaultCompression">
+            <summary>
+            Get compression level for default compression.
+            </summary>
+            <value>Return 6.</value>
+        </member>
+        <member name="E:Resco.IO.Zip.ZipStream.Closed">
+            <summary>
+            Occurs when the zip stream is closed.
+            </summary>
+            <remarks>This event occurs after the stream has been closed by the <see cref="M:Resco.IO.Zip.ZipStream.Close"/> method of the stream.</remarks>
+        </member>
+        <member name="T:Resco.IO.Zip.Internals.Const">
+            <summary>
+            Summary description for Const.
+            </summary>
+        </member>
+        <member name="M:Resco.IO.Zip.Internals.InflateBlocksState.inflate_fast(System.UInt32,System.UInt32,Resco.IO.Zip.Internals.inflate_huft[],System.Int32,Resco.IO.Zip.Internals.inflate_huft[],System.Int32,Resco.IO.Zip.Internals.z_stream)">
+            <summary>
+            Called with number of bytes left to write in window at least 258
+            (the maximum string length) and number of input bytes available
+            at least ten.  The ten bytes are six bytes for the longest length/
+            distance pair plus four bytes for overloading the bit buffer. */
+            </summary>
+            <param name="bl"></param>
+            <param name="bd"></param>
+            <param name="tl"></param>
+            <param name="tl_index"></param>
+            <param name="td"></param>
+            <param name="td_index"></param>
+            <param name="z"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
